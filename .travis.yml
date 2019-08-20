@@ -1,0 +1,18 @@
+language: rust
+
+os: linux
+dist: bionic
+rust: stable
+sudo: required
+
+before_install:
+  - sudo apt-get update
+
+install:
+  - sudo apt-get install -y ocl-icd-opencl-dev pocl-opencl-icd libpocl-dev
+
+script:
+  - cargo build
+  - cargo test
+  - cargo run --example ocl_info
+
