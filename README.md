@@ -1,13 +1,6 @@
-# Clay
+# clay-core
 
-OpenCL ray/path tracer project in Rust.
-
-## Components
-
-The project contains:
-+ [clay](clay) - basic Euclidean-space ray/path tracer
-+ [clay-hyper](clay-hyper) - experimental ray/path tracer in Lobachevsky (hyperbolic) space
-
+Core functionality for [Clay](https://github.com/nthend/clay) project.
 
 ## License
 
