@@ -97,7 +97,6 @@ impl<T: Pack> InstanceBuffer<T> {
     }
 }
 
-
 impl<T: Pack> Push for InstanceBuffer<T> {
     fn args_def(kb: &mut KernelBuilder) {
         kb

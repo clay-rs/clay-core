@@ -12,7 +12,6 @@ install:
   - sudo apt-get install -y ocl-icd-opencl-dev pocl-opencl-icd libpocl-dev
 
 script:
-  - cargo build
-  - cargo test
+  - cargo build --all-targets
   - cargo run --example ocl_info
-
+  - cargo test --all-targets

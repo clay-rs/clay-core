@@ -1,7 +1,7 @@
 use std::collections::HashSet;
-use crate::Push;
+use crate::Customer;
 
 
-pub trait View: Push {
+pub trait View: Customer {
     fn source(cache: &mut HashSet<u64>) -> String;
 }

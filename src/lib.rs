@@ -21,19 +21,20 @@ pub mod material;
 pub use material::*;
 pub mod object;
 pub use object::*;
+pub mod background;
+pub use background::*;
 
 pub mod scene;
 pub use scene::*;
 pub mod view;
 pub use view::*;
-pub mod background;
-pub use background::*;
+
+pub mod context;
+pub use context::*;
+pub mod buffer;
+pub use buffer::*;
+pub mod process;
+pub use process::*;
 
 pub mod source;
 pub use source::*;
-pub mod context;
-pub use context::*;
-pub mod worker;
-pub use worker::*;
-pub mod buffer;
-pub use buffer::*;
