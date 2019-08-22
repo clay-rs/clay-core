@@ -7,5 +7,5 @@ mod worker;
 pub use worker::*;
 mod renderer;
 pub use renderer::*;
-//mod postproc;
-//pub use postproc::*;
+mod postproc;
+pub use postproc::*;

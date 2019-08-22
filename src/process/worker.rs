@@ -2,11 +2,10 @@ use ocl;
 use crate::{Push, Context, Program, Customer};
 
 
-#[allow(dead_code)]
 pub struct Worker<C: Customer> {
     data: C::Data,
     kernel: ocl::Kernel,
-    queue: ocl::Queue,
+    context: Context,
 }
 
 impl<C: Customer> Worker<C> {
@@ -28,7 +27,7 @@ impl<C: Customer> Worker<C> {
         
         let kernel = kb.build()?;
 
-        Ok((Worker { data, kernel, queue }, message))
+        Ok((Worker { data, kernel, context: context.clone() }, message))
     }
 
     pub fn data(&self) -> &C::Data {
@@ -38,19 +37,12 @@ impl<C: Customer> Worker<C> {
         &mut self.data
     }
 
-    pub fn kernel(&self) -> &ocl::Kernel {
-        &self.kernel
-    }
-    pub fn kernel_mut(&mut self) -> &mut ocl::Kernel {
-        &mut self.kernel
-    }
-
     pub fn run(&mut self) -> crate::Result<()> {
         self.data.args_set(0, &mut self.kernel)?;
         unsafe {
             self.kernel.enq()?;
         }
-        self.queue.finish()?;
+        self.context.queue().finish()?;
         Ok(())
     }
 }

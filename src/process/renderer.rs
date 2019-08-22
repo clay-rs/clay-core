@@ -15,7 +15,7 @@ use crate::{
 
 
 pub struct RendererBuilder<S: Scene, V: View> {
-    hook: ListHook,
+    list_hook: ListHook,
     phantom: PhantomData<(S, V)>,
 }
 
@@ -34,9 +34,9 @@ pub struct RendererData<S: Scene, V: View> {
 
 impl<S: Scene, V: View> Renderer<S, V> {
     pub fn new<H: Hook + 'static>(
-        hook: H,
         dims: (usize, usize),
         scene: S, view: V,
+        hook: H,
     ) -> crate::Result<Self> {
         let mut inst_cache = HashSet::<u64>::new();
         let list_hook = ListHook::builder()
@@ -55,7 +55,7 @@ impl<S: Scene, V: View> Renderer<S, V> {
 
     pub fn builder() -> RendererBuilder<S, V> {
         RendererBuilder {
-            hook:
+            list_hook:
                 ListHook::builder()
                 .add_hook(crate::source())
                 .build(),
@@ -70,7 +70,7 @@ impl<S: Scene, V: View> Renderer<S, V> {
 
 impl<S: Scene, V: View> RendererBuilder<S, V> {
     pub fn add_hook<H: Hook + 'static>(&mut self, hook: H) {
-        self.hook.add_hook(hook);
+        self.list_hook.add_hook(hook);
     }
 
     pub fn build(
@@ -78,8 +78,8 @@ impl<S: Scene, V: View> RendererBuilder<S, V> {
         scene: S, view: V,
     ) -> crate::Result<Renderer<S, V>> {
         Renderer::<S, V>::new(
-            self.hook,
             dims, scene, view,
+            self.list_hook,
         )
     }
 }
@@ -87,42 +87,49 @@ impl<S: Scene, V: View> RendererBuilder<S, V> {
 impl<S: Scene, V: View> Customer for Renderer<S, V> {
     type Data = RendererData<S, V>;
 
-    fn new_data(&self, context: &Context) -> Self::Data {
-
+    fn new_data(&self, context: &Context) -> crate::Result<Self::Data> {
+        Ok(Self::Data {
+            screen: RenderBuffer::new(context, self.dims)?,
+            scene_data: self.scene.new_data(context)?,
+            view_data: self.view.new_data(context)?,
+        })
     }
 
     fn update_data(&self, context: &Context, data: &mut Self::Data) -> crate::Result<()> {
+        self.scene.update_data(context, &mut data.scene_data)?;
+        self.view.update_data(context, &mut data.view_data)?;
         Ok(())
     }
 }
 
 impl<S: Scene, V: View> Push for RendererData<S, V> {
+    fn args_count() -> usize {
+        3 + S::Data::args_count() + V::Data::args_count()
+    }
     fn args_def(kb: &mut KernelBuilder) {
         kb.arg(prm::Int2::zero()); // screen size
         kb.arg(None::<&ocl::Buffer<prm::Float3>>); // color buffer
         kb.arg(None::<&ocl::Buffer<u32>>); // random
-        S::args_def(kb);
-        V::args_def(kb);
+        S::Data::args_def(kb);
+        V::Data::args_def(kb);
     }
-    fn args_set(&self, i: usize, k: &mut ocl::Kernel) -> crate::Result<()> {
+    fn args_set(&mut self, i: usize, k: &mut ocl::Kernel) -> crate::Result<()> {
         let mut j = i;
 
-        let dims = screen.dims();
-        let dims = prm::Int2::new(dims.0 as i32, dims.1 as i32);
-        self.kernel.set_arg(i + 0, &dims)?;
-        self.kernel.set_arg(i + 1, screen.color_mut())?;
-        self.kernel.set_arg(i + 2, screen.random_mut())?;
+        let dims = self.screen.dims();
+        let dims_prm = prm::Int2::new(dims.0 as i32, dims.1 as i32);
+        k.set_arg(i + 0, &dims_prm)?;
+        k.set_arg(i + 1, self.screen.color_mut())?;
+        k.set_arg(i + 2, self.screen.random_mut())?;
         j += 3;
 
-        view.args_set(j, &mut self.kernel)?;
-        j += V::args_count();
+        self.scene_data.args_set(j, k)?;
+        j += S::Data::args_count();
 
-        scene.args_set(j, &mut self.kernel)?;
-        //j += S::args_count();
+        self.view_data.args_set(j, k)?;
+        //j += V::Data::args_count();
 
-        k.set_default_global_work_size(screen.dims());
-    }
-    fn args_count() -> usize {
-        3 + S::args_count() + V::args_count()
+        k.set_default_global_work_size(dims.into());
+        Ok(())
     }
 }

@@ -4,6 +4,7 @@ use crate::Context;
 
 
 pub struct RenderBuffer {
+    context: Context,
     random: ocl::Buffer<u32>,
     color: ocl::Buffer<f32>,
     n_passes: usize,
@@ -20,8 +21,10 @@ impl RenderBuffer {
         .len(len)
         .fill_val(0 as u32)
         .build()?;
+
         let mut seed = vec![0u32; len];
         thread_rng().fill(&mut seed[..]);
+        
         random.cmd()
         .offset(0)
         .write(&seed)
@@ -35,6 +38,7 @@ impl RenderBuffer {
         .build()?;
 
         Ok(Self {
+            context: context.clone(),
             random, color,
             n_passes: 0,
             dims,
@@ -54,6 +58,10 @@ impl RenderBuffer {
         Ok(())
     }
     
+    pub fn context(&self) -> &Context {
+        &self.context
+    }
+
     pub fn random(&self) -> &ocl::Buffer<u32> {
         &self.random
     }

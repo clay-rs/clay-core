@@ -98,6 +98,9 @@ impl<T: Pack> InstanceBuffer<T> {
 }
 
 impl<T: Pack> Push for InstanceBuffer<T> {
+    fn args_count() -> usize {
+        5
+    }
     fn args_def(kb: &mut KernelBuilder) {
         kb
         .arg(None::<&ocl::Buffer<i32>>) // int buffer
@@ -106,15 +109,12 @@ impl<T: Pack> Push for InstanceBuffer<T> {
         .arg(0i32) // float size
         .arg(0i32); // instance count
     }
-    fn args_set(&self, i: usize, k: &mut ocl::Kernel) -> crate::Result<()> {
+    fn args_set(&mut self, i: usize, k: &mut ocl::Kernel) -> crate::Result<()> {
         k.set_arg(i + 0, self.buffer_int())?;
         k.set_arg(i + 1, self.buffer_float())?;
         k.set_arg(i + 2, Self::size_int() as i32)?;
         k.set_arg(i + 3, Self::size_float() as i32)?;
         k.set_arg(i + 4, self.count() as i32)?;
         Ok(())
-    }
-    fn args_count() -> usize {
-        5
     }
 }

@@ -9,7 +9,7 @@ pub struct Image {
 
 impl Image {
     pub fn new(context: &Context, dims: (usize, usize)) -> crate::Result<Self> {
-        let len = dims.0*dims.1;
+        let len = 3*dims.0*dims.1;
 
         let bytes = ocl::Buffer::<u8>::builder()
         .queue(context.queue().clone())
@@ -45,6 +45,6 @@ impl Image {
         self.dims
     }
     pub fn len(&self) -> usize {
-        self.dims.0*self.dims.1
+        3*self.dims.0*self.dims.1
     }
 }

@@ -29,6 +29,9 @@ pub use scene::*;
 pub mod view;
 pub use view::*;
 
+pub mod filter;
+pub use filter::*;
+
 pub mod context;
 pub use context::*;
 pub mod buffer;

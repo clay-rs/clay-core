@@ -1,11 +1,17 @@
 use ocl;
 
-
+#[derive(Clone)]
 pub struct Context {
     platform:  ocl::Platform,
     device:    ocl::Device,
     context:   ocl::Context,
     queue:     ocl::Queue,
+}
+
+impl PartialEq for Context {
+    fn eq(&self, rhs: &Self) -> bool {
+        self.queue.as_core().as_ptr() == rhs.queue.as_core().as_ptr()
+    }
 }
 
 impl Context {
