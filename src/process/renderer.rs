@@ -9,7 +9,7 @@ use crate::{
     Push,
     Scene, View,
     Context, Program,
-    Customer,
+    DataBuilder,
     RenderBuffer,
 };
 
@@ -26,7 +26,7 @@ pub struct Renderer<S: Scene, V: View> {
     pub view: V,
 }
 
-pub struct RendererData<S: Scene, V: View> {
+pub struct RenderData<S: Scene, V: View> {
     screen: RenderBuffer,
     scene_data: S::Data,
     view_data: V::Data,
@@ -84,8 +84,8 @@ impl<S: Scene, V: View> RendererBuilder<S, V> {
     }
 }
 
-impl<S: Scene, V: View> Customer for Renderer<S, V> {
-    type Data = RendererData<S, V>;
+impl<S: Scene, V: View> DataBuilder for Renderer<S, V> {
+    type Data = RenderData<S, V>;
 
     fn new_data(&self, context: &Context) -> crate::Result<Self::Data> {
         Ok(Self::Data {
@@ -102,7 +102,7 @@ impl<S: Scene, V: View> Customer for Renderer<S, V> {
     }
 }
 
-impl<S: Scene, V: View> Push for RendererData<S, V> {
+impl<S: Scene, V: View> Push for RenderData<S, V> {
     fn args_count() -> usize {
         3 + S::Data::args_count() + V::Data::args_count()
     }
@@ -130,6 +130,53 @@ impl<S: Scene, V: View> Push for RendererData<S, V> {
         //j += V::Data::args_count();
 
         k.set_default_global_work_size(dims.into());
+        Ok(())
+    }
+}
+
+pub struct RenderWorker<S: Scene, V: View> {
+    data: RenderData<S, V>,
+    kernel: ocl::Kernel,
+    context: Context,
+}
+
+impl<S: Scene, V: View> RenderWorker<S, V> {
+    pub fn new(
+        context: &Context,
+        program: &Program,
+        data: RenderData<S, V>,
+    ) -> crate::Result<(Self, String)> {
+        let queue = context.queue().clone();
+
+        let (ocl_prog, message) = program.build(context)?;
+
+        let mut kb = ocl::Kernel::builder();
+        kb.program(&ocl_prog)
+        .name("render")
+        .queue(queue.clone());
+        RenderData::<S, V>::args_def(&mut kb);
+        
+        let kernel = kb.build()?;
+
+        Ok((RenderWorker {
+            data, kernel,
+            context: context.clone(),
+        }, message))
+    }
+
+    pub fn data(&self) -> &RenderData<S, V> {
+        &self.data
+    }
+    pub fn data_mut(&mut self) -> &mut RenderData<S, V> {
+        &mut self.data
+    }
+
+    pub fn run(&mut self) -> crate::Result<()> {
+        self.data.args_set(0, &mut self.kernel)?;
+        unsafe {
+            self.kernel.enq()?;
+        }
+        self.context.queue().finish()?;
         Ok(())
     }
 }

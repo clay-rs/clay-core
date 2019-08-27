@@ -1,8 +1,8 @@
 use crate::{Push, Context};
 
 
-/// Something that tells worker what to do
-pub trait Customer {
+/// Something that could build device-specific data.
+pub trait DataBuilder {
     /// Data that is stored on the device.
     type Data: Push;
 
