@@ -1,4 +1,4 @@
-__kernel void draw(
+__kernel void mean(
     int2 size,
     int dst_passes,
     int src_passes,
@@ -10,6 +10,6 @@ __kernel void draw(
 
     float3 dst_color = vload3(idx, dst_buffer);
     float3 src_color = vload3(idx, src_buffer);
-    dst_color = (dst_color*dst_passes + src_color*src_passes)/(dst_passes + src_passes);
+    dst_color = (dst_color*dst_passes + src_color)/(dst_passes + src_passes);
     vstore3(dst_color, idx, dst_buffer);
 }

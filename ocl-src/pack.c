@@ -1,7 +1,7 @@
 __kernel void pack(
     int2 size,
-    __global uchar *image
-    __global const float *buffer,
+    __global uchar *image,
+    __global const float *buffer
 ) {
     int2 pos = (int2)(get_global_id(0), get_global_id(1));
     int idx = pos.x + pos.y*size.x;

@@ -12,7 +12,7 @@ impl IdentityFilter {
 }
 
 impl Filter for IdentityFilter {
-    fn name() -> String {
+    fn inst_name() -> String {
         "identity_filter".to_string()
     }
     fn source(_: &mut HashSet<u64>) -> String {

@@ -1,7 +1,7 @@
 mod program;
 pub use program::*;
 
-mod renderer;
-pub use renderer::*;
+mod render;
+pub use render::*;
 mod postproc;
 pub use postproc::*;

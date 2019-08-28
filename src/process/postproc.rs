@@ -1,5 +1,6 @@
 use std::{
     mem::swap,
+    ops::Deref,
     path::Path,
     collections::HashSet,
     marker::PhantomData,
@@ -54,19 +55,29 @@ impl<F: Filter> PostprocCollector<F> {
         self.list_hook.add_hook(hook);
     }
 
+    fn source(cache: &mut HashSet<u64>) -> String {
+        let cpref = F::inst_name().to_uppercase();
+        [
+            format!("#define __FILTER_ARGS_DEF {}_ARGS_DEF", cpref),
+            format!("#define __FILTER_ARGS {}_ARGS", cpref),
+            format!("#define __filter_apply {}_apply", F::inst_name()),
+            F::source(cache)
+        ].join("\n")
+    }
+
     pub fn collect(mut self) -> crate::Result<PostprocBuilder<F>> {
         let mut cache = HashSet::<u64>::new();
         self.list_hook.add_hook(
             MemHook::builder()
             .add_file(
                 &Path::new("__gen/filter.h"),
-                F::source(&mut cache),
+                Self::source(&mut cache),
             )?
             .build()
         );
         let program = Program::new(
             &self.list_hook,
-            &Path::new("clay_core/postproc.c"),
+            &Path::new("clay_core/filter.c"),
         )?;
 
         Ok(PostprocBuilder { program, phantom: PhantomData })
@@ -161,9 +172,9 @@ impl<F: Filter> Postproc<F> {
         let k_filt = kb.build()?;
 
         let (k_mean, _msg_mean) = Self::build_mean(context)?;
-        println!("Build log (mean.c):\n{}", _msg_mean);
+        //println!("Build log (mean.c):\n{}", _msg_mean);
         let (k_pack, _msg_pack) = Self::build_pack(context)?;
-        println!("Build log (pack.c):\n{}", _msg_pack);
+        //println!("Build log (pack.c):\n{}", _msg_pack);
 
         Ok((Postproc {
             context: context.clone(),
@@ -227,8 +238,7 @@ impl<F: Filter> Postproc<F> {
         }
 
         unsafe {
-            k
-            .cmd()
+            k.cmd()
             .global_work_size(self.dims)
             .enq()?;
         }
@@ -244,14 +254,32 @@ impl<F: Filter> Postproc<F> {
         k.set_arg(2, &self.buffers.0)?;
 
         unsafe {
-            k
-            .cmd()
+            k.cmd()
             .global_work_size(self.dims)
             .enq()?;
         }
 
         swap(&mut self.buffers.1, &mut self.buffers.0);
         Ok(())
+    }
+
+    pub fn process<'a, T: Deref<Target=&'a RenderBuffer>, I: Iterator<Item=T>>(
+        &mut self, screens: I,
+    ) -> crate::Result<()> {
+        let mut n_passes = 0;
+        for screen in screens {
+            self.apply_collect(n_passes, screen.deref())?;
+            n_passes += screen.n_passes();
+        }
+
+        self.apply_filter()?;
+
+        self.context.queue().finish()?;
+        Ok(())
+    }
+
+    pub fn process_one(&mut self, screen: &RenderBuffer) -> crate::Result<()> {
+        self.process([screen].iter())
     }
 
     pub fn make_image(&mut self) -> crate::Result<()> {
@@ -262,28 +290,12 @@ impl<F: Filter> Postproc<F> {
         k.set_arg(2, &self.buffers.0)?;
 
         unsafe {
-            k
-            .cmd()
+            k.cmd()
             .global_work_size(self.dims)
             .enq()?;
         }
 
         swap(&mut self.buffers.1, &mut self.buffers.0);
-        Ok(())
-    }
-
-    pub fn process<'a, I: Iterator<Item=&'a RenderBuffer>>(
-        &mut self, screens: I,
-    ) -> crate::Result<()> {
-        let mut n_passes = 0;
-        for screen in screens {
-            self.apply_collect(n_passes, screen)?;
-            n_passes += screen.n_passes();
-        }
-
-        self.apply_filter()?;
-
-        self.context.queue().finish()?;
         Ok(())
     }
 

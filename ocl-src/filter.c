@@ -1,3 +1,6 @@
+#include <__gen/filter.h>
+
+
 __kernel void filter(
     int2 size,
     __global float *dst_buffer,

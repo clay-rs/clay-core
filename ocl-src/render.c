@@ -7,8 +7,8 @@ __kernel void render(
     int2 size,
     __global float *color_buffer,
     __global uint *random,
-    VIEW_ARGS_DEF,
-    SCENE_ARGS_DEF
+    SCENE_ARGS_DEF,
+    VIEW_ARGS_DEF
 ) {
     int2 pos = (int2)(get_global_id(0), get_global_id(1));
     int idx = pos.x + pos.y*size.x;

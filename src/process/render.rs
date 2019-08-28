@@ -65,6 +65,14 @@ impl<S: Scene, V: View> Renderer<S, V> {
     pub fn program(&self) -> &Program {
         &self.program
     }
+
+    pub fn create_worker(&self, context: &Context) -> crate::Result<(RenderWorker<S, V>, String)> {
+        RenderWorker::new(
+            context,
+            self.program(),
+            self.create_data(context)?,
+        )
+    }
 }
 
 impl<S: Scene, V: View> RendererBuilder<S, V> {
@@ -86,11 +94,11 @@ impl<S: Scene, V: View> RendererBuilder<S, V> {
 impl<S: Scene, V: View> Store for Renderer<S, V> {
     type Data = RenderData<S, V>;
 
-    fn new_data(&self, context: &Context) -> crate::Result<Self::Data> {
+    fn create_data(&self, context: &Context) -> crate::Result<Self::Data> {
         Ok(Self::Data {
             screen: RenderBuffer::new(context, self.dims)?,
-            scene_data: self.scene.new_data(context)?,
-            view_data: self.view.new_data(context)?,
+            scene_data: self.scene.create_data(context)?,
+            view_data: self.view.create_data(context)?,
         })
     }
 
@@ -98,6 +106,27 @@ impl<S: Scene, V: View> Store for Renderer<S, V> {
         self.scene.update_data(context, &mut data.scene_data)?;
         self.view.update_data(context, &mut data.view_data)?;
         Ok(())
+    }
+}
+
+impl<S: Scene, V: View> RenderData<S, V> {
+    pub fn buffer(&self) -> &RenderBuffer {
+        &self.screen
+    }
+    pub fn buffer_mut(&mut self) -> &mut RenderBuffer {
+        &mut self.screen
+    }
+    pub fn scene(&self) -> &S::Data {
+        &self.scene_data
+    }
+    pub fn scene_mut(&mut self) -> &mut S::Data {
+        &mut self.scene_data
+    }
+    pub fn view(&self) -> &V::Data {
+        &self.view_data
+    }
+    pub fn view_mut(&mut self) -> &mut V::Data {
+        &mut self.view_data
     }
 }
 
@@ -128,7 +157,6 @@ impl<S: Scene, V: View> Push for RenderData<S, V> {
         self.view_data.args_set(j, k)?;
         //j += V::Data::args_count();
 
-        k.set_default_global_work_size(dims.into());
         Ok(())
     }
 }
@@ -173,9 +201,13 @@ impl<S: Scene, V: View> RenderWorker<S, V> {
     pub fn run(&mut self) -> crate::Result<()> {
         self.data.args_set(0, &mut self.kernel)?;
         unsafe {
-            self.kernel.enq()?;
+            self.kernel.cmd()
+            .global_work_size(self.data.screen.dims())
+            .enq()?;
         }
         self.context.queue().finish()?;
+        self.data_mut().screen.pass();
+
         Ok(())
     }
 }

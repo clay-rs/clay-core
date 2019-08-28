@@ -7,7 +7,7 @@ pub trait Store {
     type Data: Push;
 
     /// Creates device data.
-    fn new_data(&self, context: &Context) -> crate::Result<Self::Data>;
+    fn create_data(&self, context: &Context) -> crate::Result<Self::Data>;
 
     /// Updates device data.
     fn update_data(&self, context: &Context, data: &mut Self::Data) -> crate::Result<()>;

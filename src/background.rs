@@ -1,8 +1,8 @@
 use std::collections::HashSet;
-use crate::Push;
+use crate::Store;
 
 
 /// Background of the scene.
-pub trait Background: Push {
+pub trait Background: Store {
     fn source(cache: &mut HashSet<u64>) -> String;
 }
