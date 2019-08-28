@@ -1,7 +1,7 @@
 use std::collections::HashSet;
-use crate::DataBuilder;
+use crate::Store;
 
 
-pub trait Scene: DataBuilder {
+pub trait Scene: Store {
     fn source(cache: &mut HashSet<u64>) -> String;
 }

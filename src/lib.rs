@@ -3,10 +3,12 @@ pub use error::Error;
 pub mod result;
 pub use result::Result;
 
-pub mod push;
-pub use push::*;
 pub mod pack;
 pub use pack::*;
+pub mod push;
+pub use push::*;
+pub mod store;
+pub use store::*;
 pub mod type_hash;
 pub use type_hash::*;
 pub mod class;

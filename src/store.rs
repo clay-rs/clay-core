@@ -1,9 +1,9 @@
 use crate::{Push, Context};
 
 
-/// Something that could build device-specific data.
-pub trait DataBuilder {
-    /// Data that is stored on the device.
+/// Something that could store its data on a device.
+pub trait Store {
+    /// The data that is stored on the device.
     type Data: Push;
 
     /// Creates device data.

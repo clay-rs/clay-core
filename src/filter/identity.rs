@@ -5,6 +5,12 @@ use crate::{Push, Filter};
 
 pub struct IdentityFilter {}
 
+impl IdentityFilter {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
 impl Filter for IdentityFilter {
     fn name() -> String {
         "identity_filter".to_string()
@@ -16,12 +22,12 @@ impl Filter for IdentityFilter {
 
 impl Push for IdentityFilter {
     fn args_count() -> usize {
-        0
+        1
     }
-    fn args_def(_kb: &mut KernelBuilder) {
-        // pass
+    fn args_def(kb: &mut KernelBuilder) {
+        kb.arg(&0i32);
     }
-    fn args_set(&mut self, _i: usize, _k: &mut ocl::Kernel) -> crate::Result<()> {
-        Ok(())
+    fn args_set(&mut self, i: usize, k: &mut ocl::Kernel) -> crate::Result<()> {
+        k.set_arg(i, &0i32).map_err(|e| e.into())
     }
 }

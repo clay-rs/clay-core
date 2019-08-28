@@ -6,10 +6,9 @@ use std::{
 use ocl::{self, prm, builders::KernelBuilder};
 use ocl_include::{Hook, MemHook, ListHook};
 use crate::{
-    Push,
+    Push, Store,
     Scene, View,
     Context, Program,
-    DataBuilder,
     RenderBuffer,
 };
 
@@ -84,7 +83,7 @@ impl<S: Scene, V: View> RendererBuilder<S, V> {
     }
 }
 
-impl<S: Scene, V: View> DataBuilder for Renderer<S, V> {
+impl<S: Scene, V: View> Store for Renderer<S, V> {
     type Data = RenderData<S, V>;
 
     fn new_data(&self, context: &Context) -> crate::Result<Self::Data> {
