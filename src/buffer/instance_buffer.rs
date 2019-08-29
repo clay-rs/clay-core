@@ -8,7 +8,7 @@ use crate::{
 };
 
 
-pub struct InstanceBuffer<T: Pack> {
+pub struct InstanceBuffer<T: Pack + 'static> {
     buffer_int: ocl::Buffer<i32>,
     buffer_float: ocl::Buffer<f32>,
     count: usize,
@@ -16,9 +16,9 @@ pub struct InstanceBuffer<T: Pack> {
 }
 
 impl<T: Pack> InstanceBuffer<T> {
-    pub fn new(context: &Context, objects: &[T]) -> crate::Result<Self> {
+    pub fn new<'a, I: ExactSizeIterator<Item=&'a T>>(context: &Context, objects: I) -> crate::Result<Self> {
         let mut buffer = Self::reserved(context, objects.len())?;
-        buffer.write(&objects)?;
+        buffer.write(objects)?;
         Ok(buffer)
     }
 
@@ -42,25 +42,20 @@ impl<T: Pack> InstanceBuffer<T> {
             count, phantom: PhantomData::<T>,
         })
     }
-    /*
-    pub fn write_iter<'b, I: Iterator<Item=&'b T>>(&mut self, objects: I) -> crate::Result<()> {
-        let objvec = objects.collect::<Vec<_>>();
-        self.write_slice(&objvec)
-    }
-    */
 
-    pub fn write(&mut self, objects: &[T]) -> crate::Result<()> {
-        let mut buffer_int = vec![0i32; T::size_int().max(1)*objects.len()];
-        let mut buffer_float = vec![0.0f32; T::size_float().max(1)*objects.len()];
+    pub fn write<'a, I: ExactSizeIterator<Item=&'a T>>(&mut self, objects: I) -> crate::Result<()> {
+        let len = objects.len();
+        let mut buffer_int = vec![0i32; T::size_int().max(1)*len];
+        let mut buffer_float = vec![0.0f32; T::size_float().max(1)*len];
         // Use this `.max(1)` workaround because `chunks` panics on 0 (why there is such silly requirement?)
-        for (obj, (ibuf, fbuf)) in objects.iter().zip(
+        for (obj, (ibuf, fbuf)) in objects.zip(
             buffer_int.chunks_mut(Self::size_int().max(1))
             .zip(buffer_float.chunks_mut(Self::size_float().max(1)))
         ) {
             obj.pack_to(&mut ibuf[..T::size_int()], &mut fbuf[..T::size_float()]);
         }
-        if objects.len() == 0 || T::size_int() == 0 { buffer_int = vec![0]; }
-        if objects.len() == 0 || T::size_float() == 0 { buffer_float = vec![0.0]; }
+        if len == 0 || T::size_int() == 0 { buffer_int = vec![0]; }
+        if len == 0 || T::size_float() == 0 { buffer_float = vec![0.0]; }
 
         if buffer_int.len() == self.buffer_int.len() && buffer_float.len() == self.buffer_float.len() {
             self.buffer_int.cmd()

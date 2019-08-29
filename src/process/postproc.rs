@@ -263,7 +263,7 @@ impl<F: Filter> Postproc<F> {
         Ok(())
     }
 
-    pub fn process<'a, T: Deref<Target=&'a RenderBuffer>, I: Iterator<Item=T>>(
+    pub fn process<'a, I: Iterator<Item=&'a RenderBuffer>>(
         &mut self, screens: I,
     ) -> crate::Result<()> {
         let mut n_passes = 0;
@@ -279,7 +279,7 @@ impl<F: Filter> Postproc<F> {
     }
 
     pub fn process_one(&mut self, screen: &RenderBuffer) -> crate::Result<()> {
-        self.process([screen].iter())
+        self.process([screen].into_iter().map(|s| *s))
     }
 
     pub fn make_image(&mut self) -> crate::Result<()> {
