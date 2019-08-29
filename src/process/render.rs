@@ -6,10 +6,13 @@ use std::{
 use ocl::{self, prm, builders::KernelBuilder};
 use ocl_include::{Hook, MemHook, ListHook};
 use crate::{
-    Push, Store,
-    Scene, View,
-    Context, Program,
-    RenderBuffer,
+    prelude::*,
+    scene::Scene,
+    view::View,
+    
+    Context,
+    process::Program,
+    buffer::RenderBuffer,
 };
 
 

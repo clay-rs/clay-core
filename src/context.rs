@@ -1,5 +1,7 @@
 use ocl;
 
+
+/// Context that represents separate processing entity.
 #[derive(Clone)]
 pub struct Context {
     platform:  ocl::Platform,

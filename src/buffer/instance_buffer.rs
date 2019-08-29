@@ -1,11 +1,6 @@
-use std::{
-    marker::PhantomData,
-};
+use std::marker::PhantomData;
 use ocl::{self, builders::KernelBuilder};
-use crate::{
-    Context,
-    Pack, Push,
-};
+use crate::{Pack, Push, Context};
 
 
 pub struct InstanceBuffer<T: Pack + 'static> {

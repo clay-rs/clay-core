@@ -27,7 +27,7 @@ macro_rules! material_combine {
 
             #[allow(unused_assignments)]
             fn method_source(method: &str) -> String {
-                use $crate::{pack::*, class::*, material::*};
+                use $crate::{prelude::*, material::*};
 
                 let cpref = format!(
                     "{}_{}",
@@ -64,7 +64,7 @@ macro_rules! material_combine {
             }
         }
 
-        impl $crate::Material for $Combine {
+        impl $crate::material::Material for $Combine {
             fn brightness(&self) -> f64 {
                 $(
                     self.$field.0*self.$field.1.brightness() +
@@ -73,9 +73,9 @@ macro_rules! material_combine {
             }
         }
 
-        impl $crate::Instance<$crate::MaterialClass> for $Combine {
+        impl $crate::Instance<$crate::material::MaterialClass> for $Combine {
             fn source(cache: &mut std::collections::HashSet<u64>) -> String {
-                use $crate::{TypeHash, class::*, material::*};
+                use $crate::{prelude::*, material::*};
                 if !cache.insert(Self::type_hash()) {
                     return String::new()
                 }

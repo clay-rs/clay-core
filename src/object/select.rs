@@ -2,20 +2,20 @@
 macro_rules! object_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Object:ty ) ),+ $(,)? } ) => {
         $crate::instance_select!(
-            $Select: $crate::Object: $crate::ObjectClass {
+            $Select: $crate::object::Object: $crate::object::ObjectClass {
                 $( $Enum($Param = $Object) ),+
             }
         );
-        impl $crate::Object for $Select {}
+        impl $crate::object::Object for $Select {}
 
         impl<
-            B_: $crate::Bound,
+            B_: $crate::shape::Bound,
             $(
                 $Param: 
-                    $crate::Object +
-                    $crate::Bounded<B_>
+                    $crate::object::Object +
+                    $crate::shape::Bounded<B_>
             ),+
-        > $crate::Bounded<B_> for $Select<
+        > $crate::shape::Bounded<B_> for $Select<
             $( $Param ),+
         > {
             fn bound(&self) -> Option<B_> {
@@ -26,13 +26,13 @@ macro_rules! object_select {
         }
 
         impl<
-            T_: $crate::Target,
+            T_: $crate::shape::Target,
             $(
                 $Param: 
-                    $crate::Object +
-                    $crate::Targeted<T_>
+                    $crate::object::Object +
+                    $crate::shape::Targeted<T_>
             ),+
-        > $crate::Targeted<T_> for $Select<
+        > $crate::shape::Targeted<T_> for $Select<
             $( $Param ),+
         > {
             fn target(&self) -> Option<(T_, f64)> {

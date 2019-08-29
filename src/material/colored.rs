@@ -1,10 +1,8 @@
 use std::collections::HashSet;
 use nalgebra::Vector3;
 use crate::{
-    pack::*,
-    class::*,
+    prelude::*,
     material::*,
-    TypeHash,
 };
 
 

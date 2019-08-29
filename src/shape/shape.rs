@@ -1,7 +1,6 @@
 use crate::{
-    Pack, 
-    class::*,
-    map::*, 
+    prelude::*,
+    map::Map, 
     shape::ShapeMapper,
     material::Material, 
     object::Covered,

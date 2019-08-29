@@ -1,45 +1,42 @@
-pub mod error; 
-pub use error::Error;
+pub mod error;
 pub mod result;
-pub use result::Result;
 
 pub mod pack;
-pub use pack::*;
 pub mod push;
-pub use push::*;
 pub mod store;
-pub use store::*;
 pub mod type_hash;
-pub use type_hash::*;
 pub mod class;
-pub use class::*;
 pub mod select;
 
 pub mod map;
-pub use map::*;
 pub mod shape;
-pub use shape::*;
 pub mod material;
-pub use material::*;
 pub mod object;
-pub use object::*;
-pub mod background;
-pub use background::*;
 
 pub mod scene;
-pub use scene::*;
 pub mod view;
-pub use view::*;
 
 pub mod filter;
-pub use filter::*;
 
 pub mod context;
-pub use context::*;
 pub mod buffer;
-pub use buffer::*;
 pub mod process;
-pub use process::*;
 
 pub mod source;
+
+
+pub mod prelude {
+    pub use crate::pack::*;
+    pub use crate::push::*;
+    pub use crate::store::*;
+    pub use crate::type_hash::*;
+    pub use crate::class::*;
+}
+
+
+pub use error::Error;
+pub use result::Result;
+
+pub use prelude::*;
+pub use context::*;
 pub use source::*;

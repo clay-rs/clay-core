@@ -1,6 +1,6 @@
 use crate::{
-    Pack, Shape,
-    class::*,
+    prelude::*,
+    shape::*,
 };
 
 

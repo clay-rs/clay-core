@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 use crate::{
-    Pack, Packer,
-    TypeHash, class::*,
-    shape::*, material::*,
+    prelude::*,
+    shape::*,
+    material::*,
     object::*,
 };
 

@@ -2,7 +2,7 @@ use std::{
     collections::HashSet,
     marker::PhantomData,
 };
-use crate::{pack::*, class::*, material::*};
+use crate::{prelude::*, material::*};
 
 
 #[derive(Clone, Debug, Default)]

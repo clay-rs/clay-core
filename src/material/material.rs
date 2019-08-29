@@ -1,7 +1,6 @@
 use nalgebra::{Vector3};
 use crate::{
-    Pack,
-    class::*,
+    prelude::*,
     material::Colored,
 };
 

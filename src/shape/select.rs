@@ -2,20 +2,20 @@
 macro_rules! shape_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Shape:ty ) ),+ $(,)? } ) => {
         $crate::instance_select!(
-            $Select: $crate::Shape: $crate::ShapeClass {
+            $Select: $crate::shape::Shape: $crate::shape::ShapeClass {
                 $( $Enum($Param = $Shape) ),+
             }
         );
-        impl $crate::Shape for $Select {}
+        impl $crate::shape::Shape for $Select {}
         
         impl<
-            B_: $crate::Bound,
+            B_: $crate::shape::Bound,
             $(
                 $Param: 
-                    $crate::Shape +
-                    $crate::Bounded<B_>
+                    $crate::shape::Shape +
+                    $crate::shape::Bounded<B_>
             ),+
-        > $crate::Bounded<B_> for $Select<
+        > $crate::shape::Bounded<B_> for $Select<
             $( $Param ),+
         > {
             fn bound(&self) -> Option<B_> {

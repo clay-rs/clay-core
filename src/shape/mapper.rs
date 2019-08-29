@@ -1,5 +1,9 @@
 use std::collections::HashSet;
-use crate::{pack::*, class::*, TypeHash, Map, shape::*};
+use crate::{
+    prelude::*,
+    map::Map,
+    shape::*,
+};
 
 
 pub struct ShapeMapper<S: Shape, M: Map> {

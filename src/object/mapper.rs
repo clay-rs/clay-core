@@ -1,5 +1,9 @@
 use std::collections::HashSet;
-use crate::{pack::*, class::*, TypeHash, Map, object::*};
+use crate::{
+    prelude::*,
+    map::*,
+    object::*,
+};
 
 
 pub struct ObjectMapper<O: Object, M: Map> {

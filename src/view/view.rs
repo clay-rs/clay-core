@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use crate::Store;
+use crate::prelude::*;
 
 
 pub trait View: Store {

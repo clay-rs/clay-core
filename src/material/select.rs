@@ -2,7 +2,7 @@
 macro_rules! material_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Material:ty ) ),+ $(,)? } ) => {
         $crate::instance_select!(
-            $Select: $crate::Material: $crate::MaterialClass {
+            $Select: $crate::material::Material: $crate::material::MaterialClass {
                 $( $Enum($Param = $Material) ),+
             }
         );

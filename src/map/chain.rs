@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use crate::{TypeHash, pack::*, class::*, map::*};
+use crate::{prelude::*, map::{Map, MapClass}};
 
 
 pub struct Chain<F: Map, S: Map> {

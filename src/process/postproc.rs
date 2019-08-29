@@ -7,7 +7,12 @@ use std::{
 };
 use ocl::{self, prm};
 use ocl_include::{Hook, MemHook, ListHook};
-use crate::{Context, Program, Filter, RenderBuffer, Image};
+use crate::{
+    filter::Filter,
+    Context,
+    process::Program,
+    buffer::{RenderBuffer, Image},
+};
 
 
 pub struct PostprocCollector<F: Filter> {
