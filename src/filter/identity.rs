@@ -3,6 +3,7 @@ use ocl::{self, builders::KernelBuilder};
 use crate::{Push, Filter};
 
 
+#[derive(Default)]
 pub struct IdentityFilter {}
 
 impl IdentityFilter {

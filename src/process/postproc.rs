@@ -252,6 +252,7 @@ impl<F: Filter> Postproc<F> {
         k.set_arg(0, &d)?;
         k.set_arg(1, &mut self.buffers.1)?;
         k.set_arg(2, &self.buffers.0)?;
+        self.filter.args_set(3, k)?;
 
         unsafe {
             k.cmd()
