@@ -43,15 +43,13 @@ impl<F: Filter> PostprocBuilder<F> {
     }
 }
 
-impl<F: Filter> Postproc<F> {
-    pub fn builder() -> PostprocCollector<F> {
-        PostprocCollector {
-            list_hook:
-                ListHook::builder()
-                .add_hook(crate::source())
-                .build(),
-            phantom: PhantomData,
-        }
+pub fn create_postproc<F: Filter>() -> PostprocCollector<F> {
+    PostprocCollector {
+        list_hook:
+            ListHook::builder()
+            .add_hook(crate::source())
+            .build(),
+        phantom: PhantomData,
     }
 }
 
@@ -97,6 +95,16 @@ impl<F: Filter> PostprocBuilder<F> {
         filter: F,
     ) -> crate::Result<(Postproc<F>, String)> {
         Postproc::new(context, dims, filter, self.program)
+    }
+}
+
+impl<F: Filter + Default> PostprocBuilder<F> {
+    pub fn build_default(
+        self,
+        context: &Context,
+        dims: (usize, usize),
+    ) -> crate::Result<(Postproc<F>, String)> {
+        self.build(context, dims, F::default())
     }
 }
 

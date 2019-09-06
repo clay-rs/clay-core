@@ -2,6 +2,7 @@ use std::{
     path::Path,
     collections::HashSet,
     marker::PhantomData,
+    time::{Instant, Duration},
 };
 use ocl::{self, prm, builders::KernelBuilder};
 use ocl_include::{Hook, MemHook, ListHook};
@@ -15,6 +16,15 @@ use crate::{
     buffer::RenderBuffer,
 };
 
+pub fn create_renderer<S: Scene, V: View>() -> RendererBuilder<S, V> {
+    RendererBuilder {
+        list_hook:
+            ListHook::builder()
+            .add_hook(crate::source())
+            .build(),
+        phantom: PhantomData,
+    }
+}
 
 pub struct RendererBuilder<S: Scene, V: View> {
     list_hook: ListHook,
@@ -53,16 +63,6 @@ impl<S: Scene, V: View> Renderer<S, V> {
         let program = Program::new(&list_hook, &Path::new("clay_core/render.c"))?;
 
         Ok(Self { program, dims, scene, view })
-    }
-
-    pub fn builder() -> RendererBuilder<S, V> {
-        RendererBuilder {
-            list_hook:
-                ListHook::builder()
-                .add_hook(crate::source())
-                .build(),
-            phantom: PhantomData,
-        }
     }
 
     pub fn program(&self) -> &Program {
@@ -201,6 +201,8 @@ impl<S: Scene, V: View> RenderWorker<S, V> {
         &mut self.data
     }
 
+    /// Run one ray tracing pass.
+    /// During this process there only one ray will be casted for each pixel.
     pub fn run(&mut self) -> crate::Result<()> {
         self.data.args_set(0, &mut self.kernel)?;
         unsafe {
@@ -212,5 +214,17 @@ impl<S: Scene, V: View> RenderWorker<S, V> {
         self.data_mut().screen.pass();
 
         Ok(())
+    }
+
+    /// Repeat ray tracing passes until elapsed time exceeds the given one.
+    pub fn run_for(&mut self, time: Duration) -> crate::Result<usize> {
+        let inst = Instant::now();
+        let mut passes = 1;
+        self.run()?;
+        while inst.elapsed() < time {
+            self.run()?;
+            passes += 1;
+        }
+        Ok(passes)
     }
 }

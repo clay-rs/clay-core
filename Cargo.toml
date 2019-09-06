@@ -5,11 +5,11 @@ authors = ["Alexey Gerasev <alexey.gerasev@gmail.com>"]
 license = "MIT/Apache-2.0"
 edition = "2018"
 
-description = "Core functionality for Clay - an OpenCL ray/path tracer"
-homepage = "https://github.com/nthend/clay"
-repository = "https://github.com/nthend/clay"
+description = "Core functionality for Clay - an OpenCL ray tracer"
+homepage = "https://github.com/clay-rs/clay-core"
+repository = "https://github.com/clay-rs/clay-core"
 
-keywords = ["ray-tracing", "path-tracing", "opencl"]
+keywords = ["ray-tracing", "opencl"]
 categories = ["graphics", "rendering", "multimedia"]
 
 readme = "README.md"
