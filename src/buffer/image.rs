@@ -14,7 +14,7 @@ impl Image {
         let bytes = ocl::Buffer::<u8>::builder()
         .queue(context.queue().clone())
         .flags(ocl::flags::MEM_WRITE_ONLY)
-        .len(3*len)
+        .len(len)
         .fill_val(0 as u8)
         .build()?;
 
