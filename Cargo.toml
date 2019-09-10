@@ -1,12 +1,12 @@
 [package]
 name = "clay-core"
-version = "0.0.2"
+version = "0.1.0"
 authors = ["Alexey Gerasev <alexey.gerasev@gmail.com>"]
 license = "MIT/Apache-2.0"
 edition = "2018"
 
-description = "Core functionality for Clay - an OpenCL ray tracer"
-homepage = "https://github.com/clay-rs/clay-core"
+description = "Core functionality for Clay - fast, modular and extendable ray tracer"
+homepage = "https://clay-rs.github.io/"
 repository = "https://github.com/clay-rs/clay-core"
 
 keywords = ["ray-tracing", "opencl"]
