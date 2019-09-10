@@ -1,13 +1,21 @@
-# Clay
+# clay-core
 
-OpenCL ray/path tracer project in Rust.
+[![Crates.io][crates_badge]][crates]
+[![Docs.rs][docs_badge]][docs]
+[![Travis CI][travis_badge]][travis]
+[![License][license_badge]][license]
 
-## Components
+[crates_badge]: https://img.shields.io/crates/v/clay-core.svg
+[docs_badge]: https://docs.rs/clay-core/badge.svg
+[travis_badge]: https://api.travis-ci.org/clay-rs/clay-core.svg?branch=master
+[license_badge]: https://img.shields.io/crates/l/clay-core.svg
 
-The project contains:
-+ [clay](clay) - basic Euclidean-space ray/path tracer
-+ [clay-hyper](clay-hyper) - experimental ray/path tracer in Lobachevsky (hyperbolic) space
+[crates]: https://crates.io/crates/clay-core
+[docs]: https://docs.rs/clay-core
+[travis]: https://travis-ci.org/clay-rs/clay-core
+[license]: #license
 
+Core functionality for [Clay project](https://clay-rs.github.io/).
 
 ## License
 
