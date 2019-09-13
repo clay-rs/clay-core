@@ -14,17 +14,22 @@ use crate::{
     buffer::{RenderBuffer, Image},
 };
 
-
+/// Collects device source code required to build postprocessor. 
 pub struct PostprocCollector<F: Filter> {
     list_hook: ListHook,
     phantom: PhantomData<F>,
 }
 
+/// Responsible for postprocessor building.
 pub struct PostprocBuilder<F: Filter> {
     program: Program,
     phantom: PhantomData<F>,
 }
 
+/// Postprocessing of raw rendered image.
+///
+/// It is responsible for collecting images from different workers,
+/// applying filters and generating resulting image.
 pub struct Postproc<F: Filter> {
     context: Context,
     k_mean: ocl::Kernel,
@@ -43,6 +48,7 @@ impl<F: Filter> PostprocBuilder<F> {
     }
 }
 
+/// Creates initial postprocessor collector.
 pub fn create_postproc<F: Filter>() -> PostprocCollector<F> {
     PostprocCollector {
         list_hook:

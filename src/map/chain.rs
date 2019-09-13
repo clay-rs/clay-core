@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use crate::{prelude::*, map::{Map, MapClass}};
 
-
+/// Subsequently chains two mappins together.
 pub struct Chain<F: Map, S: Map> {
     pub first: F,
     pub second: S,

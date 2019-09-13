@@ -16,6 +16,7 @@ use crate::{
     buffer::RenderBuffer,
 };
 
+/// Creates new renderer builder.
 pub fn create_renderer<S: Scene, V: View>() -> RendererBuilder<S, V> {
     RendererBuilder {
         list_hook:
@@ -26,11 +27,15 @@ pub fn create_renderer<S: Scene, V: View>() -> RendererBuilder<S, V> {
     }
 }
 
+/// Responsible for building the renderer.
 pub struct RendererBuilder<S: Scene, V: View> {
     list_hook: ListHook,
     phantom: PhantomData<(S, V)>,
 }
 
+/// Defines the whole raytracing process.
+///
+/// It stores scene and viewer and produces workers for specific device.
 pub struct Renderer<S: Scene, V: View> {
     program: Program,
     dims: (usize, usize),
@@ -38,6 +43,7 @@ pub struct Renderer<S: Scene, V: View> {
     pub view: V,
 }
 
+/// Device data of the renderer.
 pub struct RenderData<S: Scene, V: View> {
     screen: RenderBuffer,
     scene_data: S::Data,
@@ -164,6 +170,9 @@ impl<S: Scene, V: View> Push for RenderData<S, V> {
     }
 }
 
+/// Worker of the renderer.
+///
+/// It actually runs ray tracing process on the specific device and handles render data.
 pub struct RenderWorker<S: Scene, V: View> {
     data: RenderData<S, V>,
     kernel: ocl::Kernel,

@@ -8,6 +8,7 @@ use crate::{
 
 
 /// Shape of an object.
+///
 /// It defines the search of the point where ray intersects this shape.
 pub trait Shape: Pack + Instance<ShapeClass> {
     /// Creates a new shape by applying some kind of mapping to previous one.
@@ -23,6 +24,7 @@ pub trait Shape: Pack + Instance<ShapeClass> {
     }
 }
 
+/// Device interface for shape.
 pub enum ShapeClass {}
 impl Class for ShapeClass {
     fn name() -> String {

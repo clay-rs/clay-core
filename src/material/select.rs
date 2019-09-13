@@ -1,3 +1,6 @@
+/// The macro for making a union of materials.
+///
+/// You can read more about the technique [here](https://clay-rs.github.io/knowledge/#objects).
 #[macro_export]
 macro_rules! material_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Material:ty ) ),+ $(,)? } ) => {

@@ -12,6 +12,7 @@ pub trait Map: Pack + Instance<MapClass> {
     }
 }
 
+/// Device interface for mapping.
 pub enum MapClass {}
 impl Class for MapClass {
     fn name() -> String {

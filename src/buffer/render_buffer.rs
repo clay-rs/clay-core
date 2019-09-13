@@ -3,6 +3,7 @@ use rand::{Rng, thread_rng};
 use crate::Context;
 
 
+/// Buffer that stores necessary data for rendering (e.g. collected statistics, rng seeds, etc).
 pub struct RenderBuffer {
     context: Context,
     random: ocl::Buffer<u32>,

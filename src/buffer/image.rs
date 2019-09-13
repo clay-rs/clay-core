@@ -1,7 +1,7 @@
 use ocl;
 use crate::Context;
 
-
+/// Rendered and postprocessed image is stored here.
 pub struct Image {
     bytes: ocl::Buffer<u8>,
     dims: (usize, usize),

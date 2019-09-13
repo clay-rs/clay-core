@@ -6,6 +6,7 @@ use crate::{
 
 
 /// Material of an object surface.
+///
 /// It specifies the way how does ray bounce off the surface.
 /// It defines the color, specularity, opacity, diffusion,
 /// radiance and other properties of the object surface. 
@@ -23,6 +24,7 @@ pub trait Material: Pack + Instance<MaterialClass> {
     }
 }
 
+/// Device interface for material.
 pub enum MaterialClass {}
 impl Class for MaterialClass {
     fn name() -> String {

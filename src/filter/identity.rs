@@ -3,7 +3,7 @@ use ocl::{self, builders::KernelBuilder};
 use crate::{Push, filter::Filter};
 
 
-/// Filter that doesn't change picture. Used as placeholder.
+/// Filter that doesn't change picture. Used as a placeholder.
 #[derive(Default)]
 pub struct IdentityFilter {}
 

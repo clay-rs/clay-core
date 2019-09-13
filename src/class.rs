@@ -9,7 +9,7 @@ pub trait Class {
     fn methods() -> Vec<String>;
 }
 
-/// An implementation of a class in OpenCL.
+/// An implementation of an interface in OpenCL.
 pub trait Instance<C: Class>: Sized + 'static {
     // Class of an instance.
     //type Class: Class = C;

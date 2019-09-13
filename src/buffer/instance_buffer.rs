@@ -3,6 +3,7 @@ use ocl::{self, builders::KernelBuilder};
 use crate::{Pack, Push, Context};
 
 
+/// Device buffer of abstract entities. Entity should implement `Pack`. 
 pub struct InstanceBuffer<T: Pack + 'static> {
     buffer_int: ocl::Buffer<i32>,
     buffer_float: ocl::Buffer<f32>,

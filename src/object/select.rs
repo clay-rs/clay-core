@@ -1,3 +1,6 @@
+/// The macro for making a union of objects.
+///
+/// You can read more about the technique [here](https://clay-rs.github.io/knowledge/#objects).
 #[macro_export]
 macro_rules! object_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Object:ty ) ),+ $(,)? } ) => {

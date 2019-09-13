@@ -1,30 +1,50 @@
+/// Crate own error type.
 pub mod error;
+/// Crate own result type.
 pub mod result;
 
+/// Serialization of entities for storing it on the device.
 pub mod pack;
-pub mod push;
+/// Representation of entities that could be stored in the device.
 pub mod store;
+/// Pushing arguments to the device kernel.
+pub mod push;
+/// Rust type hashing to generate unique identfiers in device code.
 pub mod type_hash;
+
+/// Traits for device code interfaces definition.
 pub mod class;
+/// Basic macro for making a union of entities.
 pub mod select;
 
+/// Mappings in render space.
 pub mod map;
+/// Shape of an object. 
 pub mod shape;
+/// Material of an object.
 pub mod material;
+/// Object to render.
 pub mod object;
 
+/// Rendering scene.
 pub mod scene;
+/// View of the rendering scene.
 pub mod view;
 
+/// Filter for rendered image postprocessing.
 pub mod filter;
 
+/// Context of the device code execution.
 pub mod context;
+/// Various device buffers.
 pub mod buffer;
+/// Functionality for rendering pipeline.
 pub mod process;
 
+/// Loading the device OpenCL source code.
 pub mod source;
 
-
+/// Reexport of the basic traits.
 pub mod prelude {
     pub use crate::pack::*;
     pub use crate::push::*;
