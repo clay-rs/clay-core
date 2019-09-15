@@ -7,6 +7,7 @@ use crate::{
 /// Bounding shape that contains the whole object inside.
 pub trait Bound: Pack + Instance<BoundClass> {}
 
+/// Device interface for bound.
 pub enum BoundClass {}
 impl Class for BoundClass {
     fn name() -> String {

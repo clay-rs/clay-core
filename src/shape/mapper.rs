@@ -5,7 +5,7 @@ use crate::{
     shape::*,
 };
 
-
+/// A new shape obtained by applying some mapping to another shape.
 pub struct ShapeMapper<S: Shape, M: Map> {
     pub shape: S,
     pub map: M,

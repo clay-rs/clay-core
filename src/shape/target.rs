@@ -7,6 +7,7 @@ use crate::{
 /// pointing to itself from any given point in space.
 pub trait Target: Pack + Instance<TargetClass> {}
 
+/// Device interface for target.
 pub enum TargetClass {}
 impl Class for TargetClass {
     fn name() -> String {

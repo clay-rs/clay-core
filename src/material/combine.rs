@@ -1,8 +1,12 @@
+/// Local macro for replacing tokens.
 #[macro_export]
 macro_rules! _replace {
     ($_t:tt, $sub:expr) => { $sub };
 }
 
+/// The macro for combining materials.
+///
+/// You can read more about the technique [here](https://clay-rs.github.io/knowledge/#objects).
 #[macro_export]
 macro_rules! material_combine {
     ($Combine:ident { $( $field:ident : $Material:ty ),+ $(,)? }) => {

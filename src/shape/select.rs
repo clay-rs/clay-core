@@ -1,3 +1,6 @@
+/// The macro for making a union of shapes.
+///
+/// You can read more about the technique [here](https://clay-rs.github.io/knowledge/#objects).
 #[macro_export]
 macro_rules! shape_select {
     ( $Select:ident { $( $Enum:ident ( $Param:ident = $Shape:ty ) ),+ $(,)? } ) => {

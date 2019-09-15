@@ -8,6 +8,7 @@ use crate::{
 /// An abstract object that could be drawn completely.
 pub trait Object: Pack + Instance<ObjectClass> {}
 
+/// Device interface for object.
 pub enum ObjectClass {}
 impl Class for ObjectClass {
     fn name() -> String {

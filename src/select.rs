@@ -1,3 +1,9 @@
+/// The basic macro for making a union of entities.
+///
+/// This macro is the most generic version.
+/// You can find more specific versions in `shape`, `material` and `object` modules.
+///
+/// You can read more about the technique [here](https://clay-rs.github.io/knowledge/#objects).
 #[macro_export]
 macro_rules! instance_select {
     ($Select:ident: $Base:path: $Class:ty { $( $Enum:ident($Param:ident = $Instance:ty) ),+ $(,)? }) => {

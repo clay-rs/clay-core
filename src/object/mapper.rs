@@ -5,7 +5,7 @@ use crate::{
     object::*,
 };
 
-
+/// A new object obtained by applying some mapping to another object.
 pub struct ObjectMapper<O: Object, M: Map> {
     pub object: O,
     pub map: M,

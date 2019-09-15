@@ -8,7 +8,7 @@ use crate::{
 
 
 #[derive(Clone, Debug, Default)]
-/// Object obtained by covering shape with material
+/// Object obtained by covering a shape with a material.
 pub struct Covered<S: Shape, M: Material> {
     pub shape: S,
     pub material: M,

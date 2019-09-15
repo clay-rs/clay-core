@@ -5,7 +5,7 @@ use crate::{
     material::*,
 };
 
-
+/// Gives the color to an existing material.
 #[derive(Clone, Debug)]
 pub struct Colored<M: Material> {
     pub material: M,

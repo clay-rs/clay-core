@@ -17,6 +17,9 @@ lazy_static!{
     ).multi_line(true).build().unwrap();
 }
 
+/// Handler for source code of the device OpenCL program.
+///
+/// It is responsible for building the program and showing errors and warnings it they're exist.
 pub struct Program {
     source: String,
     index: ocl_include::Index,
