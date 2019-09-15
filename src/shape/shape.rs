@@ -25,6 +25,17 @@ pub trait Shape: Pack + Instance<ShapeClass> {
 }
 
 /// Device interface for shape.
+///
+/// How to implement in OpenCL:
+/// ```c
+/// #include <clay_core/shape/shape.h>
+///
+/// SHAPE_HIT_RET <shape>_hit(
+///     SHAPE_HIT_ARGS_DEF
+/// ) {
+///     ...
+/// }
+/// ```
 pub enum ShapeClass {}
 impl Class for ShapeClass {
     fn name() -> String {

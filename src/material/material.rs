@@ -25,6 +25,17 @@ pub trait Material: Pack + Instance<MaterialClass> {
 }
 
 /// Device interface for material.
+///
+/// How to implement in OpenCL:
+/// ```c
+/// #include <clay_core/material/material.h>
+///
+/// MATERIAL_BOUNCE_RET <material>_bounce(
+///     MATERIAL_BOUNCE_ARGS_DEF
+/// ) {
+///     ...
+/// }
+/// ```
 pub enum MaterialClass {}
 impl Class for MaterialClass {
     fn name() -> String {

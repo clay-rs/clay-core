@@ -48,7 +48,7 @@ impl<F: Filter> PostprocBuilder<F> {
     }
 }
 
-/// Creates initial postprocessor collector.
+/// Creates initial postprocessor collector with already included device source.
 pub fn create_postproc<F: Filter>() -> PostprocCollector<F> {
     PostprocCollector {
         list_hook:

@@ -16,7 +16,7 @@ use crate::{
     buffer::RenderBuffer,
 };
 
-/// Creates new renderer builder.
+/// Creates new renderer builder with already included device source.
 pub fn create_renderer<S: Scene, V: View>() -> RendererBuilder<S, V> {
     RendererBuilder {
         list_hook:

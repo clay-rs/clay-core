@@ -1,6 +1,8 @@
-/// Crate own error type.
+//! Core functionality for [Clay project](https://clay-rs.github.io/).
+
+/// Own error type.
 pub mod error;
-/// Crate own result type.
+/// Own result type.
 pub mod result;
 
 /// Serialization of entities for storing it on the device.
@@ -26,9 +28,9 @@ pub mod material;
 /// Object to render.
 pub mod object;
 
-/// Rendering scene.
+/// Scene to be rendered.
 pub mod scene;
-/// View of the rendering scene.
+/// View of the scene.
 pub mod view;
 
 /// Filter for rendered image postprocessing.
