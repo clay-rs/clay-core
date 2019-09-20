@@ -1,4 +1,5 @@
 use ocl;
+use image;
 use crate::Context;
 
 /// Rendered and postprocessed image is stored here.
@@ -46,5 +47,15 @@ impl Image {
     }
     pub fn len(&self) -> usize {
         3*self.dims.0*self.dims.1
+    }
+
+    pub fn save_to_file(&self, filename: &str) -> crate::Result<()> {
+        image::save_buffer(
+            &filename,
+            &self.read()?,
+            self.dims.0 as u32, self.dims.1 as u32,
+            image::RGB(8),
+        )?;
+        Ok(())
     }
 }
