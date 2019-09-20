@@ -5,7 +5,7 @@ pub mod error;
 /// Own result type.
 pub mod result;
 
-/// Serialization of entities for storing it on the device.
+/// Serialization of entities for storing them on the device.
 pub mod pack;
 /// Representation of entities that could be stored in the device.
 pub mod store;
