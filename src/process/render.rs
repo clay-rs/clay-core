@@ -145,7 +145,7 @@ impl<S: Scene, V: View> Push for RenderData<S, V> {
     }
     fn args_def(kb: &mut KernelBuilder) {
         kb.arg(prm::Int2::zero()); // screen size
-        kb.arg(None::<&ocl::Buffer<prm::Float3>>); // color buffer
+        kb.arg(None::<&ocl::Buffer<f32>>); // color buffer
         kb.arg(None::<&ocl::Buffer<u32>>); // random
         S::Data::args_def(kb);
         V::Data::args_def(kb);
