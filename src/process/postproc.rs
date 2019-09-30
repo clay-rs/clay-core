@@ -24,6 +24,7 @@ pub struct PostprocCollector<F: Filter> {
 pub struct PostprocBuilder<F: Filter> {
     program: Program,
     phantom: PhantomData<F>,
+    filters: Vec<Box<dyn Filter>>,
 }
 
 /// Postprocessing of raw rendered image.
@@ -33,8 +34,8 @@ pub struct PostprocBuilder<F: Filter> {
 pub struct Postproc<F: Filter> {
     context: Context,
     k_mean: ocl::Kernel,
-    k_filt: ocl::Kernel,
     k_pack: ocl::Kernel,
+    filters: Vec<(Box<dyn Filter>, ocl::Kernel)>,
     host_buffer: Vec<f32>,
     buffers: (ocl::Buffer<f32>, ocl::Buffer<f32>),
     image: Image,

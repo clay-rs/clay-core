@@ -1,9 +1,8 @@
-use std::collections::HashSet;
-use crate::{Push, TypeHash};
+use std::path::PathBuf;
+use crate::PushDyn;
 
 
-/// Filter is applied to each pixel of rendered picture.
-pub trait Filter: Push + TypeHash + 'static {
-    fn inst_name() -> String;
-    fn source(cache: &mut HashSet<u64>) -> String;
+/// Filter performs arbitrary transformation of rendered picture.
+pub trait Filter: PushDyn {
+    fn source_file(&self) -> PathBuf;
 }
