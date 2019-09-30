@@ -1,7 +1,6 @@
 use std::{
     path::Path,
     collections::HashSet,
-    marker::PhantomData,
     time::{Instant, Duration},
 };
 use ocl::{self, prm, builders::KernelBuilder};
@@ -10,28 +9,11 @@ use crate::{
     prelude::*,
     scene::Scene,
     view::View,
-    
     Context,
-    process::Program,
+    process::{Program, Kernel},
     buffer::RenderBuffer,
 };
 
-/// Creates new renderer builder with already included device source.
-pub fn create_renderer<S: Scene, V: View>() -> RendererBuilder<S, V> {
-    RendererBuilder {
-        list_hook:
-            ListHook::builder()
-            .add_hook(crate::source())
-            .build(),
-        phantom: PhantomData,
-    }
-}
-
-/// Responsible for building the renderer.
-pub struct RendererBuilder<S: Scene, V: View> {
-    list_hook: ListHook,
-    phantom: PhantomData<(S, V)>,
-}
 
 /// Defines the whole raytracing process.
 ///
@@ -80,22 +62,6 @@ impl<S: Scene, V: View> Renderer<S, V> {
             context,
             self.program(),
             self.create_data(context)?,
-        )
-    }
-}
-
-impl<S: Scene, V: View> RendererBuilder<S, V> {
-    pub fn add_hook<H: Hook + 'static>(&mut self, hook: H) {
-        self.list_hook.add_hook(hook);
-    }
-
-    pub fn build(
-        self, dims: (usize, usize),
-        scene: S, view: V,
-    ) -> crate::Result<Renderer<S, V>> {
-        Renderer::<S, V>::new(
-            dims, scene, view,
-            self.list_hook,
         )
     }
 }
@@ -175,8 +141,7 @@ impl<S: Scene, V: View> Push for RenderData<S, V> {
 /// It actually runs ray tracing process on the specific device and handles render data.
 pub struct RenderWorker<S: Scene, V: View> {
     data: RenderData<S, V>,
-    kernel: ocl::Kernel,
-    context: Context,
+    kernel: Kernel<RenderData<S, V>>,
 }
 
 impl<S: Scene, V: View> RenderWorker<S, V> {
@@ -185,22 +150,8 @@ impl<S: Scene, V: View> RenderWorker<S, V> {
         program: &Program,
         data: RenderData<S, V>,
     ) -> crate::Result<(Self, String)> {
-        let queue = context.queue().clone();
-
-        let (ocl_prog, message) = program.build(context)?;
-
-        let mut kb = ocl::Kernel::builder();
-        kb.program(&ocl_prog)
-        .name("render")
-        .queue(queue.clone());
-        RenderData::<S, V>::args_def(&mut kb);
-        
-        let kernel = kb.build()?;
-
-        Ok((RenderWorker {
-            data, kernel,
-            context: context.clone(),
-        }, message))
+        let (kernel, message) = Kernel::new(context, program)?;
+        Ok((Self { data, kernel }, message))
     }
 
     pub fn data(&self) -> &RenderData<S, V> {
@@ -210,15 +161,15 @@ impl<S: Scene, V: View> RenderWorker<S, V> {
         &mut self.data
     }
 
+    pub fn context(&self) -> &Context {
+        self.kernel.context()
+    }
+
     /// Run one ray tracing pass.
     /// During this process there only one ray will be casted for each pixel.
     pub fn run(&mut self) -> crate::Result<()> {
-        self.data.args_set(0, &mut self.kernel)?;
-        unsafe {
-            self.kernel.cmd()
-            .global_work_size(self.data.screen.dims())
-            .enq()?;
-        }
+        self.kernel.run(&self.data, self.data.screen.dims())?;
+
         self.context.queue().finish()?;
         self.data_mut().screen.pass();
 

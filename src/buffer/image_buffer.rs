@@ -1,33 +1,34 @@
-use ocl;
+use ocl::{self, OclScl as Scl};
 use image;
 use crate::Context;
 
-/// Rendered and postprocessed image is stored here.
-pub struct Image {
-    bytes: ocl::Buffer<u8>,
+
+/// Rendered image is stored here.
+pub struct Image<T: Scl = u8> {
+    buffer: ocl::Buffer<T>,
     dims: (usize, usize),
 }
 
-impl Image {
+impl<T: Scl> Image<T> {
     pub fn new(context: &Context, dims: (usize, usize)) -> crate::Result<Self> {
         let len = 3*dims.0*dims.1;
 
-        let bytes = ocl::Buffer::<u8>::builder()
+        let buffer = ocl::Buffer::<T>::builder()
         .queue(context.queue().clone())
-        .flags(ocl::flags::MEM_WRITE_ONLY)
+        .flags(ocl::flags::MEM_READ_WRITE)
         .len(len)
-        .fill_val(0 as u8)
+        .fill_val(T::zero())
         .build()?;
 
         Ok(Image {
-            bytes, dims,
+            buffer, dims,
         })
     }
     
-    pub fn read(&self) -> crate::Result<Vec<u8>> {
-        let mut vec = vec![0 as u8; self.bytes.len()];
+    pub fn read(&self) -> crate::Result<Vec<T>> {
+        let mut vec = vec![T::zero(); self.buffer.len()];
 
-        self.bytes.cmd()
+        self.buffer.cmd()
         .offset(0)
         .read(&mut vec)
         .enq()?;
@@ -35,11 +36,11 @@ impl Image {
         Ok(vec)
     }
 
-    pub fn bytes(&self) -> &ocl::Buffer<u8> {
-        &self.bytes
+    pub fn buffer(&self) -> &ocl::Buffer<T> {
+        &self.buffer
     }
-    pub fn bytes_mut(&mut self) -> &mut ocl::Buffer<u8> {
-        &mut self.bytes
+    pub fn buffer_mut(&mut self) -> &mut ocl::Buffer<T> {
+        &mut self.buffer
     }
 
     pub fn dims(&self) -> (usize, usize) {
@@ -48,7 +49,9 @@ impl Image {
     pub fn len(&self) -> usize {
         3*self.dims.0*self.dims.1
     }
+}
 
+impl Image<u8> {
     pub fn save_to_file(&self, filename: &str) -> crate::Result<()> {
         image::save_buffer(
             &filename,

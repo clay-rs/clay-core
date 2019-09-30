@@ -1,19 +1,23 @@
-use std::{
-    path::Path,
-};
-use ocl_include::{MemHook};
+use std::collections::HashSet;
+use crate::TypeHash;
 
-include!(concat!(env!("OUT_DIR"), "/ocl_src_list.rs"));
 
-/// OpenCL source code tree.
-pub fn source() -> MemHook {
-    let mut hook = MemHook::new();
-    let pref = Path::new("clay_core");
-    for (name, content) in OCL_SRC_LIST.iter() {
-        hook.add_file(
-            &pref.join(name),
-            content.to_string(),
-        ).unwrap();
+// Something that has associated OpenCL code.
+pub trait Source: 'static {
+    /// Returns associated OpenCL code.
+    ///
+    /// Method takes `cache` argument contains hashes of types that are already included.
+    /// If current type hash already in `cache` then empty string should be returned.
+    fn source() {
+        if !cache.insert(Self::type_hash()) {
+            String::new()
+        } else {
+            Self::source_nocheck(cache)
+        }
     }
-    hook
+
+    /// Returns associated OpenCL code.
+    ///
+    /// This version of method doesn't check `cache`.
+    fn source_nocheck(cache: &mut HashSet<u64>) -> String;
 }

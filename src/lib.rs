@@ -7,15 +7,17 @@ pub mod result;
 
 /// Serialization of entities for storing them on the device.
 pub mod pack;
-/// Representation of entities that could be stored in the device.
-pub mod store;
+/// OpenCL source code association.
+pub mod source;
 /// Pushing arguments to the device kernel.
 pub mod push;
+/// Representation of entities that could be stored in the device.
+pub mod store;
 /// Rust type hashing to generate unique identfiers in device code.
 pub mod type_hash;
-
 /// Traits for device code interfaces definition.
 pub mod class;
+
 /// Basic macro for making a union of entities.
 pub mod select;
 
@@ -44,11 +46,12 @@ pub mod buffer;
 pub mod process;
 
 /// Loading the device OpenCL source code.
-pub mod source;
+pub mod ocl_src;
 
 /// Reexport of the basic traits.
 pub mod prelude {
     pub use crate::pack::*;
+    pub use crate::source::*;
     pub use crate::push::*;
     pub use crate::store::*;
     pub use crate::type_hash::*;
@@ -61,4 +64,4 @@ pub use result::Result;
 
 pub use prelude::*;
 pub use context::*;
-pub use source::*;
+pub use ocl_src::*;

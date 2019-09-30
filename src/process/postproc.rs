@@ -14,18 +14,6 @@ use crate::{
     buffer::{RenderBuffer, Image},
 };
 
-/// Collects device source code required to build postprocessor. 
-pub struct PostprocCollector<F: Filter> {
-    list_hook: ListHook,
-    phantom: PhantomData<F>,
-}
-
-/// Responsible for postprocessor building.
-pub struct PostprocBuilder<F: Filter> {
-    program: Program,
-    phantom: PhantomData<F>,
-    filters: Vec<Box<dyn Filter>>,
-}
 
 /// Postprocessing of raw rendered image.
 ///
@@ -130,11 +118,7 @@ impl<F: Filter> Postproc<F> {
         .program(&ocl_prog)
         .name("mean")
         .queue(queue.clone())
-        .arg(prm::Int2::zero()) // screen size
-        .arg(0i32) // dst passes
-        .arg(0i32) // src passes
-        .arg(None::<&ocl::Buffer<f32>>) // dst buffer
-        .arg(None::<&ocl::Buffer<f32>>) // src buffer
+        
         .build()?;
 
         Ok((kernel, message))
