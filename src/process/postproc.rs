@@ -155,7 +155,7 @@ impl<F: Filter> Postproc<F> {
         .name("pack")
         .queue(queue.clone())
         .arg(prm::Int2::zero()) // screen size
-        .arg(None::<&ocl::Buffer<u32>>) // image buffer
+        .arg(None::<&ocl::Buffer<u8>>) // image buffer
         .arg(None::<&ocl::Buffer<f32>>) // color buffer
         .build()?;
 
