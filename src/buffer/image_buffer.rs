@@ -49,6 +49,7 @@ impl Image {
         3*self.dims.0*self.dims.1
     }
 
+    #[cfg(feature = "saveimg")]
     pub fn save_to_file(&self, filename: &str) -> crate::Result<()> {
         image::save_buffer(
             &filename,
